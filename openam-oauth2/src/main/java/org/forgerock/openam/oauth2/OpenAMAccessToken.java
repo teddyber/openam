@@ -82,11 +82,12 @@ public class OpenAMAccessToken extends AccessToken {
     public OpenAMAccessToken(String id, String authorizationCode, String resourceOwnerId, String clientId,
                              String redirectUri, Set<String> scope, long expiryTime, String refreshTokenId,
                              String tokenName, String grantType, String nonce, String realm, String claims,
-                             String auditTrackingId) {
+                             String auditTrackingId, String ssoTokenId) {
         super(id, authorizationCode, resourceOwnerId, clientId, redirectUri, scope, expiryTime, refreshTokenId,
                 tokenName, grantType, nonce);
         setRealm(realm);
         setAuditTrackingId(auditTrackingId);
+        setSsoTokenId(ssoTokenId);
 
         if (!StringUtils.isBlank(claims)) {
             setClaims(claims);
@@ -368,6 +369,15 @@ public class OpenAMAccessToken extends AccessToken {
      */
     protected void setAuditTrackingId(String auditId) {
         setStringProperty(AUDIT_TRACKING_ID, auditId);
+    }
+
+    /**
+     * Sets the token id of the session.
+     *
+     *  @param ssoTokenId The token id of the session.
+     */
+    private void setSsoTokenId(String ssoTokenId) {
+        setStringProperty(OAuth2Constants.Custom.SSO_TOKEN_ID, ssoTokenId);
     }
 
     /**

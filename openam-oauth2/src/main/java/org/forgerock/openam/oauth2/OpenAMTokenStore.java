@@ -488,16 +488,17 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
         } else {
             expiryTime = clientRegistration.getAccessTokenLifeTime(providerSettings) + System.currentTimeMillis();
         }
-        
+        final String ssoTokenId = getSsoTokenId(request);
+
         final AccessToken accessToken;
         if (refreshToken == null) {
             accessToken = new OpenAMAccessToken(id, authorizationCode, resourceOwnerId, clientId, redirectUri,
                     scope, expiryTime, null, OAuth2Constants.Token.OAUTH_ACCESS_TOKEN, grantType, nonce,
-                    realm, claims, auditId);
+                    realm, claims, auditId, ssoTokenId);
         } else {
             accessToken = new OpenAMAccessToken(id, authorizationCode, resourceOwnerId, clientId, redirectUri,
                     scope, expiryTime, refreshToken.getTokenId(), OAuth2Constants.Token.OAUTH_ACCESS_TOKEN, grantType,
-                    nonce, realm, claims, auditId);
+                    nonce, realm, claims, auditId, ssoTokenId);
         }
         try {
             tokenStore.create(accessToken);
