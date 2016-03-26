@@ -488,7 +488,16 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
         } else {
             expiryTime = clientRegistration.getAccessTokenLifeTime(providerSettings) + System.currentTimeMillis();
         }
-        final String ssoTokenId = getSsoTokenId(request);
+        
+        String ssoTokenId = "";
+        if (authorizationCode == null)    
+            ssoTokenId = getSsoTokenId(request);//implicit
+        else 
+            try {
+                ssoTokenId = readAuthorizationCode(request, authorizationCode).getSessionId();//authz code
+            } catch (InvalidGrantException e) {
+                //TODO
+            }
 
         final AccessToken accessToken;
         if (refreshToken == null) {
@@ -557,15 +566,21 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
             acr = token.getAuthenticationContextClassReference();
         }
 
-        RefreshToken currentRefreshToken = request.getToken(RefreshToken.class);
+        OpenAMRefreshToken currentRefreshToken = (OpenAMRefreshToken) request.getToken(RefreshToken.class);
         if (currentRefreshToken != null) {
             authModules = currentRefreshToken.getAuthModules();
             acr = currentRefreshToken.getAuthenticationContextClassReference();
         }
+        
+        String ssoTokenId;
+        if (token == null)    
+            ssoTokenId = currentRefreshToken.getSsoTokenId();//TODO test RT from RT
+        else 
+            ssoTokenId = token.getSessionId();//from authz code
 
         OpenAMRefreshToken refreshToken = new OpenAMRefreshToken(id, resourceOwnerId, clientId, redirectUri, scope,
                 expiryTime, OAuth2Constants.Bearer.BEARER, OAuth2Constants.Token.OAUTH_REFRESH_TOKEN, grantType,
-                realm, authModules, acr, auditId);
+                realm, authModules, acr, auditId, ssoTokenId);
 
         if (!StringUtils.isBlank(validatedClaims)) {
             refreshToken.setClaims(validatedClaims);

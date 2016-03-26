@@ -64,11 +64,12 @@ public class OpenAMRefreshToken extends RefreshToken {
      */
     public OpenAMRefreshToken(String id, String resourceOwnerId, String clientId, String redirectUri, Set<String> scope,
             long expiryTime, String tokenType, String tokenName, String grantType, String realm,
-            String authModules, String acr, String auditId) {
+            String authModules, String acr, String auditId, String ssoTokenId) {
         super(id, resourceOwnerId, clientId, redirectUri, scope, expiryTime, tokenType, tokenName, grantType,
                 authModules, acr);
         setRealm(realm);
         setAuditId(auditId);
+        setSsoTokenId(ssoTokenId);
     }
 
     /**
@@ -196,6 +197,19 @@ public class OpenAMRefreshToken extends RefreshToken {
      */
     protected void setAuditId(String auditId) {
         setStringProperty(AUDIT_TRACKING_ID, auditId);
+    }
+
+    /**
+     * Sets the token id of the session.
+     *
+     *  @param ssoTokenId The token id of the session.
+     */
+    private void setSsoTokenId(String ssoTokenId) {
+        setStringProperty(OAuth2Constants.Custom.SSO_TOKEN_ID, ssoTokenId);
+    }
+    
+    public String getSsoTokenId() {
+        return getStringProperty(OAuth2Constants.Custom.SSO_TOKEN_ID);
     }
 
     /**
