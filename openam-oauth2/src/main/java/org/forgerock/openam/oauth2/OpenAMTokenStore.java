@@ -507,7 +507,7 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
         } else {
             accessToken = new OpenAMAccessToken(id, authorizationCode, resourceOwnerId, clientId, redirectUri,
                     scope, expiryTime, refreshToken.getTokenId(), OAuth2Constants.Token.OAUTH_ACCESS_TOKEN, grantType,
-                    nonce, realm, claims, auditId, ssoTokenId);
+                    nonce, realm, claims, auditId, ((OpenAMRefreshToken) refreshToken).getSsoTokenId());
         }
         try {
             tokenStore.create(accessToken);
