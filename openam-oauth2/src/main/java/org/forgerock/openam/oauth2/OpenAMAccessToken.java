@@ -359,6 +359,7 @@ public class OpenAMAccessToken extends AccessToken {
     public Map<String, Object> getTokenInfo() {
         final Map<String, Object> tokenInfo = super.getTokenInfo();
         tokenInfo.put(getResourceString(REALM), getRealm());
+        tokenInfo.put("client_id", getClientId());
         return tokenInfo;
     }
 
